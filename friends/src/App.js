@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 import './App.css';
 
 import FriendsList from './components/FriendsList';
+import FriendForm from './components/FriendForm';
+
+const AppContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+`;
 
 class App extends Component {
   constructor() {
@@ -29,10 +39,11 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <p>Derps on derps, g sauce.</p>
+      <AppContainer>
+        <h1>Your "Friends"</h1>
         <FriendsList friends={this.state.friends} />
-      </div>
+        <FriendForm />
+      </AppContainer>
     );
   }
 }
