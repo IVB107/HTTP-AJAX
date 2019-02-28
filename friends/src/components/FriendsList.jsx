@@ -15,7 +15,10 @@ const ListContainer = styled.div`
 const FriendsList = props => {
     const { friends } = props;
     return (
-        <ListContainer>
+        <ListContainer 
+            editFriend={props.editFriend}
+            deleteFriend={props.deleteFriend}
+        >
             { friends.map(friend => {
                 return (
                     <Friend { ...props } friend={friend} key={friend.id} />

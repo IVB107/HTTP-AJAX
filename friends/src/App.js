@@ -18,8 +18,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      isEditing: false,
+      editId: '',
       friends: [],
-      error: ''
+      newFriend: {
+        name: '',
+        age: 0,
+        email: ''
+      } 
     }
   }
 
@@ -33,7 +39,79 @@ class App extends Component {
       })
       .catch(err => {
         console.log('Error: ' + err);
-        this.setState({ error: err })
+      })
+  }
+
+  handleChange = (e) => {
+    e.persist();
+    this.setState(prevState => {
+      return {
+        newFriend: {
+          ...prevState.newFriend,
+          [e.target.name]: e.target.value
+        }
+      }
+    })
+  }
+
+  handleAddFriend = (e) => {
+    e.preventDefault();
+    const newFriend = this.state.newFriend;
+    axios
+      .post('http://localhost:5000/friends', newFriend)
+      .then(res => {
+        this.setState({ 
+          friends: res.data,
+          newFriend: {
+            name: '',
+            age: 0,
+            email: ''
+          }
+        });
+      })
+      .catch(err => console.log(err))
+  }
+
+  handleEditFriend = (e, id) => {
+    e.preventDefault();
+    const friend = this.state.friends.find(friend => friend.id === id)
+    this.setState({ 
+      newFriend: friend, 
+      isEditing: true,
+      editId: id
+    })
+  }
+
+  handleSubmitEdit = (e) => {
+    e.preventDefault();
+    console.log("Submitting edited friend...");
+    const id = this.state.editId;
+    axios.put(`http://localhost:5000/friends/${id}`, id)
+      .then(res => {
+        console.log(res);
+        this.setState({
+          isEditing: false,
+          editId: '',
+          newFriend: {
+            name: '',
+            age: 0,
+            email: ''
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  handleDeleteFriend = (e, id) => {
+    axios.delete(`http://localhost:5000/friends/${id}`)
+      .then(res => {
+        console.log(res);
+        this.setState({ friends: res.data })
+      })
+      .catch(err => {
+        console.log(err);
       })
   }
 
@@ -41,8 +119,18 @@ class App extends Component {
     return (
       <AppContainer>
         <h1>Your "Friends"</h1>
-        <FriendsList friends={this.state.friends} />
-        <FriendForm />
+        <FriendsList 
+          editFriend={this.handleEditFriend}
+          deleteFriend={this.handleDeleteFriend} 
+          friends={this.state.friends} 
+        />
+        <FriendForm 
+          isEditing={this.state.isEditing}
+          onChange={this.handleChange}
+          newFriend={this.state.newFriend}
+          submitEdit={this.handleSubmitEdit}
+          addFriend={this.handleAddFriend} 
+        />
       </AppContainer>
     );
   }

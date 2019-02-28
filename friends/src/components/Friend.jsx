@@ -20,6 +20,10 @@ const Friend = props => {
             <h2>{name}</h2>
             <p><strong>Age: </strong>{age}</p>
             <p><strong>Email: </strong>{email}</p>
+            <div>
+                <button onClick={(e) => props.deleteFriend(e, id)}>Remove</button>
+                <button onClick={(e) => props.editFriend(e, id)}>Edit</button>
+            </div>
         </FriendContainer>
     )
 }
