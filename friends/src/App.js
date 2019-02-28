@@ -30,11 +30,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('CDM now running...');
     axios
       .get('http://localhost:5000/friends')
       .then(res => {
-        console.log(res);
         this.setState({ friends: res.data })
       })
       .catch(err => {
@@ -84,14 +82,14 @@ class App extends Component {
 
   handleSubmitEdit = (e) => {
     e.preventDefault();
-    console.log("Submitting edited friend...");
     const id = this.state.editId;
-    axios.put(`http://localhost:5000/friends/${id}`, id)
+    axios.put(`http://localhost:5000/friends/${id}`, this.state.newFriend)
       .then(res => {
         console.log(res);
         this.setState({
           isEditing: false,
           editId: '',
+          friends: res.data,
           newFriend: {
             name: '',
             age: 0,
@@ -107,7 +105,6 @@ class App extends Component {
   handleDeleteFriend = (e, id) => {
     axios.delete(`http://localhost:5000/friends/${id}`)
       .then(res => {
-        console.log(res);
         this.setState({ friends: res.data })
       })
       .catch(err => {
